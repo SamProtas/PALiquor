@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+dbs/
+saved_html/
+=======
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -52,5 +56,4 @@ docs/_build/
 
 # PyBuilder
 target/
-dbs/
-saved_html/
+>>>>>>> d35e5de2721c1de2c4d55ff1c9730dc141654674
