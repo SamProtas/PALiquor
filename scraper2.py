@@ -19,6 +19,8 @@ finally:
 										 trade_name TEXT, 
 										 license_no TEXT, 
 										 license_type TEXT, 
+										 license_type_title TEXT,
+										 license_type_code TEXT,
 										 status TEXT, 
 										 tavern_gaming_status TEXT, 
 										 original_owner TEXT, 
@@ -27,6 +29,8 @@ finally:
 	c.execute('''CREATE TABLE cases  (case_id INTEGER PRIMARY KEY,
 									  lid INT NOT NULL,
 									  penalty TEXT, 
+									  penalty_text TEXT,
+									  fine INT,
 									  initiation_date TEXT, 
 									  FOREIGN KEY(lid) REFERENCES licensees(lid))''')
 
@@ -86,6 +90,13 @@ for x in range(114):
 						contents = [x for x in contents if x.string != None]
 						general_info[heading_title.text[:-1]] = " ".join(contents)
 						general_info['Zipcode'] = int(contents[-1][0:5])
+					elif heading_title.text[:-1] == 'License Type':
+						contents = the_data.text.split('-')
+						license_type_title = "-".join(contents[0:-1]).strip()
+						license_type_code = contents[-1].strip()[1:-1].strip()
+						general_info['License Type Title'] = license_type_title
+						general_info['License Type Code'] = license_type_code
+						general_info[heading_title.text[:-1]] = the_data.text
 					else:
 						general_info[heading_title.text[:-1]] = the_data.text
 
@@ -95,29 +106,39 @@ for x in range(114):
 				heading_title = cell.find(class_="fieldHeading").text[:-1]
 				if heading_title == 'Penalty':
 					penalty = cell.find(class_="data").text
+					penalty_split = penalty.split('-')
+					penalty_text = " ".join(penalty_split[0:-1]).strip()
+					if len(penalty_split) > 1:
+						fine = int(penalty_split[-1].strip()[2:-4])
+					else:
+						fine = None
+
 				if heading_title == 'Initiation Date':
 					initiation_date = cell.find(class_="data").text
-					cases.append({'penalty':penalty,'initiation_date':initiation_date})
+					cases.append({'penalty':penalty, 'penalty_text':penalty_text, 'fine':fine, 'initiation_date':initiation_date})
 					penalty = None
 					initiation_date = None
 
 		if locator == 'APPLICATION CASE INFORMATION' and rowcount == locatorrow:
 			c.execute('''INSERT INTO licensees (lid, name, address, zipcode, trade_name, license_no, 
-												license_type, status, tavern_gaming_status,
+												license_type, license_type_title, license_type_code, status, tavern_gaming_status,
 												original_owner, current_owner)
 												VALUES
-												(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+												(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
 												[general_info['LID'], general_info['Name'],
 												general_info['Address'], general_info['Zipcode'],
 												general_info['Trade Name'], general_info['License No'], 
-												general_info['License Type'], general_info['Status'], 
+												general_info['License Type'], 
+												general_info['License Type Title'],
+												general_info['License Type Code'],
+												general_info['Status'], 
 												general_info['Tavern Gaming Status'],
 												general_info['Original Owner'], 
 												general_info['Current Owner']])
 			if cases:
 				for case in cases:
-					c.execute('''INSERT INTO cases (lid, penalty, initiation_date) VALUES (?, ?, ?)''',
-						[general_info['LID'], case['penalty'], case['initiation_date']])
+					c.execute('''INSERT INTO cases (lid, penalty, penalty_text, fine, initiation_date) VALUES (?, ?, ?, ?, ?)''',
+						[general_info['LID'], case['penalty'], case['penalty_text'], case['fine'],case['initiation_date']])
 
 
 
