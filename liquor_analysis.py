@@ -9,6 +9,7 @@ figsize(15, 5)
 PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
 DATABASE1 = os.path.join(PROJECT_ROOT, 'dbs', 'licensees.db')
 DATABASE2 = os.path.join(PROJECT_ROOT, 'dbs', 'liquorstores.db')
+DATABASE3 = os.path.join(PROJECT_ROOT, 'dbs', 'zipatlas_populations.csv')
 
 conn1 = sqlite3.connect(DATABASE1)
 conn2 = sqlite3.connect(DATABASE2)
@@ -18,6 +19,7 @@ df_licensees = pd.read_sql('SELECT * FROM licensees', conn1, parse_dates=[
     'current_owner', 'original_owner'])
 df_cases = pd.read_sql('SELECT * FROM cases', conn1)
 df_state_stores = pd.read_sql('SELECT * FROM liquorstores', conn2)
+df_zip_populations = pd.read_csv(DATABASE3, header = 0, thousands = ',')
 
 license_type_counts = df_licensees['license_type_title'].value_counts()
 
@@ -26,3 +28,4 @@ ax.set_xlabel('Fine ($)')
 ax.set_ylabel('Fraction of All Cases')
 ax.set_title('Cumulative Histogram of Fines')
 
+liquor_stores_per_zipcode = df_state_stores['zipcode'].value_counts()
