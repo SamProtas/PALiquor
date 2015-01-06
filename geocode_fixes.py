@@ -24,7 +24,8 @@ def fix_location(lid, new_address):
     if old_latitude or old_longitude:
         return 'No need to fix. Aborting geocode call.'
     
-    baseurl = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAvKwvspSGZpSMVBb9Jd3d4XhqatESwWZ0&address='
+    api_key = 'NOT MY REAL KEY!!!!!'
+    baseurl = 'https://maps.googleapis.com/maps/api/geocode/json?key='+api_key+'&address='
     fullurl = baseurl + new_address
 
     page = requests.get(fullurl)

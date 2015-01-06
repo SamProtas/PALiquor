@@ -17,7 +17,9 @@ licensees = c.fetchall()
 
 print len(licensees)
 
-baseurl = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAvKwvspSGZpSMVBb9Jd3d4XhqatESwWZ0&address='
+api_key = 'NOT MY REAL KEY!!!!'
+
+baseurl = 'https://maps.googleapis.com/maps/api/geocode/json?key='+api_key+'&address='
 
 count = 0
 
