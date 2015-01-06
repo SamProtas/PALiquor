@@ -24,7 +24,9 @@ finally:
 										 status TEXT, 
 										 tavern_gaming_status TEXT, 
 										 original_owner TEXT, 
-										 current_owner TEXT)''')
+										 current_owner TEXT,
+										 latitude REAL,
+										 longitude REAL)''')
 	c.execute('PRAGMA foreign_keys = ON')
 	c.execute('''CREATE TABLE cases  (case_id INTEGER PRIMARY KEY,
 									  lid INT NOT NULL,
